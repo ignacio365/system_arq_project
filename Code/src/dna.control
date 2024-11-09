@@ -1,0 +1,6 @@
+
+# dna type
+comment = 'dna is a sequence made by characters "A","C","T" and "G"'
+default_version = '1.0'
+module_pathname = '$libdir/dna_seq'
+relocatable = true

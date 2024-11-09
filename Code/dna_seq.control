@@ -1,0 +1,5 @@
+# main control file of the extension
+comment = 'INFO-H417 Database System Architecture - DNA Sequence Database Extension'
+default_version = '1.0'
+module_pathname = '$libdir/dna_seq'
+relocatable = true
