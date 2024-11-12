@@ -31,11 +31,16 @@ INSERT INTO t VALUES (5, '', '');
 
 INSERT INTO t VALUES (5, 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA', 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA');
 
+SELECT * FROM t;
 SELECT dna, text(dna), dna(text(dna)), size(dna), length(dna) FROM t;
 SELECT kmer, text(kmer), kmer(text(kmer)), size(kmer), length(kmer) FROM t;
 
+SELECT *
+ FROM generate_kmers('ACGTACGT', 6) AS k(kmer);
 
 
+ SELECT *
+ FROM generate_kmers((SELECT dna FROM t WHERE text(dna)='AGTTTTGAAAA'),2);
 
 
 

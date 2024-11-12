@@ -12,11 +12,11 @@
 
 /**********************************************************/
 
-/*DNA CREATION*/
+/*KMER CREATION*/
 
 
 /*Kmer creation from str (internal) (with checks)*/
-static Kmer*
+Kmer*
 kmer_parse(const char* str)
 {
   int32 len = strlen(str);

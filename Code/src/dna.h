@@ -1,14 +1,5 @@
 #pragma once
 
-/* fmgr macros complex type */
-
-#define DatumToDnaP(X)  ((Dna *) DatumGetPointer(X)) /*Converts Datum to a pointer to DNA*/
-#define DnaPGetDatum(X)  PointerGetDatum(X) /*Converts pointer to DNA to Datum*/
-#define PG_GETARG_DNA_P(n) DatumToDnaP(PG_GETARG_DATUM(n)) /*Gets the nth input to a Postgresql function and transforms it into a pointer to DNA*/
-#define PG_RETURN_DNA_P(x) return DnaPGetDatum(x) /*Returns a pointer to a Dna type as a Datum from a PostgreSQL function.*/
-
-/******************************************************************************************************/
-
 /* Structure to represent DNA */
 
 typedef struct Dna {
@@ -16,3 +7,12 @@ typedef struct Dna {
     char sequence[FLEXIBLE_ARRAY_MEMBER];
 } Dna;
 
+
+Datum dna_in(PG_FUNCTION_ARGS);
+Datum dna_out(PG_FUNCTION_ARGS);
+Datum dna_recv(PG_FUNCTION_ARGS);
+Datum dna_send(PG_FUNCTION_ARGS);
+Datum dna_cast_from_text(PG_FUNCTION_ARGS);
+Datum dna_cast_to_text(PG_FUNCTION_ARGS);
+Datum dna_size(PG_FUNCTION_ARGS);
+Datum dna_len(PG_FUNCTION_ARGS);
