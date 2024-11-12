@@ -165,3 +165,4 @@ CREATE OR REPLACE FUNCTION generate_kmers(IN dna, IN integer, OUT f kmer)
     RETURNS SETOF kmer
     AS 'MODULE_PATHNAME', 'generate_kmers'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+

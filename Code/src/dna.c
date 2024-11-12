@@ -46,6 +46,7 @@ dna_parse(const char* str)
 }
 
 
+
 /*Dna to str (internal)*/
 static char *
 dna_to_str(const Dna* dna)

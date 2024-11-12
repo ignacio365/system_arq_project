@@ -14,3 +14,5 @@ Datum kmer_cast_from_text(PG_FUNCTION_ARGS);
 Datum kmer_cast_to_text(PG_FUNCTION_ARGS);
 Datum kmer_size(PG_FUNCTION_ARGS);
 Datum kmer_len(PG_FUNCTION_ARGS);
+
+
