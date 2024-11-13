@@ -9,7 +9,9 @@
 
 #include "kmer.h"
 
-
+/*
+#define EPSILON         1.0E-06
+#define FPeq(A,B)       (fabs((A) - (B)) <= EPSILON)*/
 
 /**********************************************************/
 
@@ -47,6 +49,7 @@ kmer_parse(const char* str)
 
   return kmer;
 }
+
 
 
 /*Kmer to str (internal)*/
@@ -155,4 +158,43 @@ kmer_len(PG_FUNCTION_ARGS)
 {
   const Kmer *kmer  = (Kmer *) PG_GETARG_POINTER(0);
   PG_RETURN_INT32(strlen(kmer->sequence)); 
+}
+
+/*Equals function*/
+
+PG_FUNCTION_INFO_V1(kmer_equals);
+Datum
+kmer_equals(PG_FUNCTION_ARGS)
+{
+    // Retrieve arguments as C-strings (text type in PostgreSQL)
+    text *a_text = PG_GETARG_TEXT_PP(0);
+    text *b_text = PG_GETARG_TEXT_PP(1);
+
+    // Convert `text` to C-strings for comparison
+    const char *a = text_to_cstring(a_text);
+    const char *b = text_to_cstring(b_text);
+
+    // Assume `FPeq` is your custom function that compares two kmers.
+    bool result = (strcmp(a, b) == 0);
+
+    PG_RETURN_BOOL(result);
+}
+
+/*Starts with function*/
+PG_FUNCTION_INFO_V1(starts_with);
+Datum
+starts_with(PG_FUNCTION_ARGS)
+{
+    // Retrieve the prefix and kmer arguments as text
+    text *prefix_text = PG_GETARG_TEXT_PP(0);
+    text *kmer_text = PG_GETARG_TEXT_PP(1);
+
+    // Convert the `text` values to C-strings for easier manipulation
+    const char *prefix = text_to_cstring(prefix_text);
+    const char *kmer = text_to_cstring(kmer_text);
+
+    // Check if `kmer` starts with `prefix`
+    bool result = (strncmp(kmer, prefix, strlen(prefix)) == 0);
+
+    PG_RETURN_BOOL(result);
 }

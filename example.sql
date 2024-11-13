@@ -25,11 +25,11 @@ INSERT INTO t VALUES
 (4, 'AGTTTTGAAAA','AGTTTTGAAAA');
 
 /*Checking that it works*/
-INSERT INTO t VALUES (5, 'BTGE', 'BTGE');
+--INSERT INTO t VALUES (5, 'BTGE', 'BTGE');
 
-INSERT INTO t VALUES (5, '', '');
+--INSERT INTO t VALUES (5, '', '');
 
-INSERT INTO t VALUES (5, 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA', 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA');
+--INSERT INTO t VALUES (5, 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA', 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA');
 
 SELECT * FROM t;
 SELECT dna, text(dna), dna(text(dna)), size(dna), length(dna) FROM t;
@@ -42,6 +42,25 @@ SELECT *
  SELECT *
  FROM generate_kmers((SELECT dna FROM t WHERE text(dna)='AGTTTTGAAAA'),2);
 
+
+-- testing the equals
+-- this should get one row (using the table created using this script)
+SELECT * FROM t WHERE kmer_equals('ACGT', kmer);
+SELECT * FROM t WHERE kmer = 'ACGT';
+
+-- this should get empty (using the table created using this script)
+SELECT * FROM t WHERE kmer_equals('ACGTA', kmer);
+SELECT * FROM t WHERE kmer = 'ACGTA';
+
+
+-- These two queries are equivalent:
+SELECT * FROM t WHERE starts_with('ACG', kmer);
+-- SELECT * FROM t WHERE  kmer^@ 'ACG'; this is what is in the report
+SELECT * FROM t WHERE 'ACG' ^@ kmer;
+
+
+
+SELECT * FROM t;
 
 
 
