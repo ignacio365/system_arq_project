@@ -152,6 +152,37 @@ CREATE OR REPLACE FUNCTION length(kmer)
   AS 'MODULE_PATHNAME', 'kmer_len'
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+
+/******************************************************************************
+ * Operators
+ ******************************************************************************/
+
+/*Equals function operator*/
+CREATE OR REPLACE FUNCTION kmer_equals(kmer,kmer)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME', 'kmer_equals'
+    LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+
+ /*Equals operator*/
+CREATE OPERATOR = (
+    LEFTARG = kmer, RIGHTARG = kmer,
+    PROCEDURE = kmer_equals
+);
+
+/*Starts with function operator*/
+CREATE OR REPLACE FUNCTION starts_with(kmer, kmer)
+    RETURNS boolean
+    AS 'MODULE_PATHNAME', 'starts_with'
+    LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+/*Starts with operator*/
+CREATE OPERATOR ^@ (
+    LEFTARG = kmer, RIGHTARG = kmer,
+    PROCEDURE = starts_with
+);
+
+
   /***************************************************************************************/
   /***************************************************************************************/
   /***************************************************************************************/
