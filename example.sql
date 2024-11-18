@@ -58,9 +58,10 @@ SELECT * FROM t WHERE starts_with('ACG', kmer);
 -- SELECT * FROM t WHERE  kmer^@ 'ACG'; this is what is in the report
 SELECT * FROM t WHERE 'ACG' ^@ kmer;
 
-
-
 SELECT * FROM t;
 
-
+CREATE INDEX spgist_index ON t USING spgist (kmer kmer_index_support);
+SET enable_seqscan = OFF;
+SET enable_seqscan = ON;
+EXPLAIN (SELECT * FROM t WHERE 'ACGT'= kmer);
 
