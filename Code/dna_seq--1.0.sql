@@ -133,7 +133,7 @@ CREATE OR REPLACE FUNCTION text(kmer)
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE CAST (text as kmer) WITH FUNCTION kmer(text) AS IMPLICIT;
-CREATE CAST (kmer as text) WITH FUNCTION text(kmer); 
+CREATE CAST (kmer as text) WITH FUNCTION text(kmer);
 
 
 /******************************************************************************
@@ -197,11 +197,79 @@ CREATE OR REPLACE FUNCTION generate_kmers(IN dna, IN integer, OUT f kmer)
     AS 'MODULE_PATHNAME', 'generate_kmers'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+/*contains function */
+CREATE OR REPLACE FUNCTION contains(text, kmer) 
+  RETURNS boolean
+  AS 'MODULE_PATHNAME', 'contains'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
+/*contains with operator*/
+CREATE OPERATOR @> (
+    LEFTARG = text, RIGHTARG = kmer,
+    PROCEDURE = contains
+);
 
  /***************************************************************************************/
   /***************************************************************************************/
   /***************************************************************************************/
+
+/*QKMER TYPE*/
+/******************************************************************************
+ * Input/Output
+ ******************************************************************************/
+
+CREATE OR REPLACE FUNCTION qkmer_in(cstring)
+  RETURNS qkmer
+  AS 'MODULE_PATHNAME'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+
+CREATE OR REPLACE FUNCTION qkmer_out(qkmer)
+  RETURNS cstring
+  AS 'MODULE_PATHNAME'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION qkmer_recv(internal)
+  RETURNS qkmer
+  AS 'MODULE_PATHNAME'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION qkmer_send(qkmer)
+  RETURNS bytea
+  AS 'MODULE_PATHNAME'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE TYPE qkmer (
+    INPUT = qkmer_in,
+    OUTPUT = qkmer_out,
+    RECEIVE = qkmer_recv,
+    SEND = qkmer_send,
+    INTERNALLENGTH = VARIABLE
+);
+
+COMMENT ON TYPE qkmer IS 'qkmer';
+
+/******************************************************************************
+ * Text <-> qKmer functions
+ ******************************************************************************/
+
+
+/*This works as a constructor too*/
+
+CREATE OR REPLACE FUNCTION qkmer(text)
+  RETURNS qkmer
+  AS 'MODULE_PATHNAME', 'qkmer_cast_from_text'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION text(qkmer)
+  RETURNS text
+  AS 'MODULE_PATHNAME', 'qkmer_cast_to_text'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE CAST (text as qkmer) WITH FUNCTION qkmer(text) AS IMPLICIT;
+CREATE CAST (qkmer as text) WITH FUNCTION text(qkmer);
+
+
 
   
 /******************************************************************************

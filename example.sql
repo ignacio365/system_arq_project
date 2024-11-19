@@ -18,11 +18,19 @@ WHERE typname = 'kmer';
 
 CREATE TABLE t (id integer, dna dna, kmer kmer);
 
+--DROP TABLE t;
+
 INSERT INTO t VALUES
 (1, 'ACGT','ACGT'),
 (2, 'CT', 'CT'),
 (3, 'AAA', 'AAA'),
-(4, 'AGTTTTGAAAA','AGTTTTGAAAA');
+(4, 'AGTTTTGAAAA','AGTTTTGAAAA'),
+(5, 'ACGTC','ACGTC'),
+(6, 'AAGTC','AAGTC'),
+(7, 'AGGTC','AGGTC'),
+(8, 'ATGTC','ATGTC'),
+(9, 'ATGT','ATGT'),
+(10, 'ATG','ATG');
 
 /*Checking that it works*/
 --INSERT INTO t VALUES (5, 'BTGE', 'BTGE');
@@ -64,4 +72,19 @@ CREATE INDEX spgist_index ON t USING spgist (kmer kmer_index_support);
 SET enable_seqscan = OFF;
 SET enable_seqscan = ON;
 EXPLAIN (SELECT * FROM t WHERE 'ACGT'= kmer);
+
+
+-- CONTAINS FUNCTION TEST
+SELECT * FROM t WHERE contains('ANGTC', kmer);
+SELECT * FROM t where 'ANGTC' @>kmer;
+
+SELECT * FROM t WHERE contains('ANGT', kmer);
+SELECT * FROM t where 'ANGT' @>kmer;
+
+SELECT * FROM t WHERE contains('ANG', kmer);
+SELECT * FROM t where 'ANG' @>kmer;
+
+SELECT * FROM t WHERE contains('AN', kmer);
+SELECT * FROM t where 'AN' @>kmer;
+
 

@@ -1,5 +1,5 @@
 
-# k-mer type
+# qk-mer type
 comment = 'The qkmer type represents subsequences of DNA, with a maximum length of 32 nucleotides.'
 default_version = '1.0'
 module_pathname = '$libdir/dna_seq'
