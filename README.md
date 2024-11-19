@@ -1,7 +1,7 @@
 TO DO LIST
  1. ~~DNA Sequence Type (DNA)~~
  2. ~~K-mer Type (kmer)~~
- 3. Query K-mer Type (qkmer)
+ 3. Query K-mer Type (qkmer) 
  4. ~~length(dna)~~
  5. ~~length(kmer)~~
  6. length(qkmer)

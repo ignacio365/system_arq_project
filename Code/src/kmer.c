@@ -17,9 +17,6 @@
 
 #include "kmer.h"
 
-/*
-#define EPSILON         1.0E-06
-#define FPeq(A,B)       (fabs((A) - (B)) <= EPSILON)*/
 
 /**********************************************************/
 
