@@ -148,6 +148,14 @@ qkmer_cast_to_text(PG_FUNCTION_ARGS)
   PG_RETURN_TEXT_P(out);
 }
 
+/*Qkmer Length*/
+PG_FUNCTION_INFO_V1(qkmer_len);
+Datum
+qkmer_len(PG_FUNCTION_ARGS)
+{
+  const Qkmer *qkmer  = (Qkmer *) PG_GETARG_POINTER(0);
+  PG_RETURN_INT32(strlen(qkmer->sequence)); 
+}
 
 PG_FUNCTION_INFO_V1(contains);
 Datum

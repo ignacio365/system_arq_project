@@ -70,7 +70,7 @@ CREATE OR REPLACE FUNCTION size(dna)
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 
-CREATE OR REPLACE FUNCTION length(dna)
+CREATE OR REPLACE FUNCTION dna_len(dna)
   RETURNS integer
   AS 'MODULE_PATHNAME', 'dna_len'
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
@@ -147,7 +147,7 @@ CREATE OR REPLACE FUNCTION size(kmer)
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 
-CREATE OR REPLACE FUNCTION length(kmer)
+CREATE OR REPLACE FUNCTION kmer_len(kmer)
   RETURNS integer
   AS 'MODULE_PATHNAME', 'kmer_len'
   LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
@@ -261,6 +261,12 @@ CREATE CAST (qkmer as text) WITH FUNCTION text(qkmer);
 /******************************************************************************
  * Qkmer operators
  ******************************************************************************/
+/*Qkmer lenght */ 
+CREATE OR REPLACE FUNCTION qkmer_len(qkmer)
+  RETURNS integer
+  AS 'MODULE_PATHNAME', 'qkmer_len'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
 /*contains function */
 CREATE OR REPLACE FUNCTION contains(qkmer, kmer) 
   RETURNS boolean
@@ -272,7 +278,26 @@ CREATE OPERATOR @> (
     LEFTARG = qkmer, RIGHTARG = kmer,
     PROCEDURE = contains
 );
-  
+
+/******************************************************************************
+ * Lenght functions for all the types
+ ******************************************************************************/
+CREATE FUNCTION length(dna) 
+  RETURNS INT 
+  AS 'MODULE_PATHNAME', 'dna_len'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE FUNCTION length(kmer) 
+  RETURNS INT 
+  AS 'MODULE_PATHNAME', 'kmer_len'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE FUNCTION length(qkmer) 
+  RETURNS INT 
+  AS 'MODULE_PATHNAME', 'qkmer_len'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+
 /******************************************************************************
  INDEX
  ******************************************************************************/
