@@ -45,7 +45,7 @@ qkmer_parse(const char* str)
 
 
   for (int i = 0; i < len; i++) {
-    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T' || str[i]=='R' || str[i]=='Y' || str[i]=='N' )) {
+    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T' || str[i]=='R' || str[i]=='Y' || str[i]=='N' || str[i]=='W' || str[i]=='S' || str[i]=='M' || str[i]=='K' || str[i]=='B' || str[i]=='D' || str[i]=='H' || str[i]=='V'  )) {
 			ereport(
             ERROR,
             (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -185,6 +185,46 @@ contains(PG_FUNCTION_ARGS)
             /* Append [CT] in place of 'Y' */
             strncat(regex_pattern, "[CT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
             i += 4;
+        }
+        else if (*p == 'W'){
+            /* Append [AT] in place of 'W' */
+            strncat(regex_pattern, "[AT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'S'){
+            /* Append [CG] in place of 'S' */
+            strncat(regex_pattern, "[CG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'M'){
+            /* Append [AC] in place of 'M' */
+            strncat(regex_pattern, "[AC]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'K'){
+            /* Append [GT] in place of 'K' */
+            strncat(regex_pattern, "[GT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'B'){
+            /* Append [CGT] in place of 'B' */
+            strncat(regex_pattern, "[CGT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'D'){
+            /* Append [AGT] in place of 'D' */
+            strncat(regex_pattern, "[AGT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'H'){
+            /* Append [ACT] in place of 'H' */
+            strncat(regex_pattern, "[ACT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'V'){
+            /* Append [ACG] in place of 'V' */
+            strncat(regex_pattern, "[ACG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
         }
         else {
             /* Append the character as-is */
