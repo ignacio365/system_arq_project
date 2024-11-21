@@ -198,6 +198,11 @@ starts_with(PG_FUNCTION_ARGS)
     const char *prefix = text_to_cstring(prefix_text);
     const char *kmer = text_to_cstring(kmer_text);
 
+    // Check if prefix lenght is greater than the kmer length 
+    if (strlen(prefix) > strlen(kmer)) {
+        PG_RETURN_BOOL(false);
+    }
+
     // Check if `kmer` starts with `prefix`
     bool result = (strncmp(kmer, prefix, strlen(prefix)) == 0);
 

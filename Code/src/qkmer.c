@@ -45,7 +45,7 @@ qkmer_parse(const char* str)
 
 
   for (int i = 0; i < len; i++) {
-    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T' || str[i]=='R' || str[i]=='Y' || str[i]=='N' )) {
+    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T' || str[i]=='R' || str[i]=='Y' || str[i]=='N' || str[i]=='W' || str[i]=='S' || str[i]=='M' || str[i]=='K' || str[i]=='B' || str[i]=='D' || str[i]=='H' || str[i]=='V'  )) {
 			ereport(
             ERROR,
             (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
@@ -148,26 +148,34 @@ qkmer_cast_to_text(PG_FUNCTION_ARGS)
   PG_RETURN_TEXT_P(out);
 }
 
+/*Qkmer Length*/
+PG_FUNCTION_INFO_V1(qkmer_len);
+Datum
+qkmer_len(PG_FUNCTION_ARGS)
+{
+  const Qkmer *qkmer  = (Qkmer *) PG_GETARG_POINTER(0);
+  PG_RETURN_INT32(strlen(qkmer->sequence)); 
+}
 
 PG_FUNCTION_INFO_V1(contains);
 Datum
 contains(PG_FUNCTION_ARGS)
 {
-    text *pattern_text = PG_GETARG_TEXT_PP(0);
+    text *qkmer_text = PG_GETARG_TEXT_PP(0);
     text *kmer_text = PG_GETARG_TEXT_PP(1);
 
     /* Convert the PostgreSQL text types to C strings */
-    char *pattern = text_to_cstring(pattern_text);
+    char *qkmer = text_to_cstring(qkmer_text);
     char *kmer = text_to_cstring(kmer_text);
 
     /* Check if pattern and kmer have the same length */
-    if (strlen(pattern) != strlen(kmer)) {
+    if (strlen(qkmer) != strlen(kmer)) {
         PG_RETURN_BOOL(false);
     }
 
     /* Convert 'N' in pattern to a regex pattern [ATGC] */
     char regex_pattern[1024] = {0};
-    char *p = pattern;
+    char *p = qkmer;
     int i = 0;
 
     while (*p != '\0' && i < sizeof(regex_pattern) - 1) {
@@ -175,7 +183,58 @@ contains(PG_FUNCTION_ARGS)
             /* Append [ATGC] in place of 'N' */
             strncat(regex_pattern, "[ATGC]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
             i += 6;
-        } else {
+        } 
+        else if (*p == 'R'){
+            /* Append [AG] in place of 'R' */
+            strncat(regex_pattern, "[AG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'Y'){
+            /* Append [CT] in place of 'Y' */
+            strncat(regex_pattern, "[CT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'W'){
+            /* Append [AT] in place of 'W' */
+            strncat(regex_pattern, "[AT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'S'){
+            /* Append [CG] in place of 'S' */
+            strncat(regex_pattern, "[CG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'M'){
+            /* Append [AC] in place of 'M' */
+            strncat(regex_pattern, "[AC]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'K'){
+            /* Append [GT] in place of 'K' */
+            strncat(regex_pattern, "[GT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'B'){
+            /* Append [CGT] in place of 'B' */
+            strncat(regex_pattern, "[CGT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'D'){
+            /* Append [AGT] in place of 'D' */
+            strncat(regex_pattern, "[AGT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'H'){
+            /* Append [ACT] in place of 'H' */
+            strncat(regex_pattern, "[ACT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else if (*p == 'V'){
+            /* Append [ACG] in place of 'V' */
+            strncat(regex_pattern, "[ACG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 5;
+        }
+        else {
             /* Append the character as-is */
             regex_pattern[i++] = *p;
         }
