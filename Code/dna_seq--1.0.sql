@@ -197,17 +197,6 @@ CREATE OR REPLACE FUNCTION generate_kmers(IN dna, IN integer, OUT f kmer)
     AS 'MODULE_PATHNAME', 'generate_kmers'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
-/*contains function */
-CREATE OR REPLACE FUNCTION contains(text, kmer) 
-  RETURNS boolean
-  AS 'MODULE_PATHNAME', 'contains'
-  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
-
-/*contains with operator*/
-CREATE OPERATOR @> (
-    LEFTARG = text, RIGHTARG = kmer,
-    PROCEDURE = contains
-);
 
  /***************************************************************************************/
   /***************************************************************************************/
@@ -269,8 +258,20 @@ CREATE OR REPLACE FUNCTION text(qkmer)
 CREATE CAST (text as qkmer) WITH FUNCTION qkmer(text) AS IMPLICIT;
 CREATE CAST (qkmer as text) WITH FUNCTION text(qkmer);
 
+/******************************************************************************
+ * Qkmer operators
+ ******************************************************************************/
+/*contains function */
+CREATE OR REPLACE FUNCTION contains(qkmer, kmer) 
+  RETURNS boolean
+  AS 'MODULE_PATHNAME', 'contains'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
-
+/*contains with operator*/
+CREATE OPERATOR @> (
+    LEFTARG = qkmer, RIGHTARG = kmer,
+    PROCEDURE = contains
+);
   
 /******************************************************************************
  INDEX

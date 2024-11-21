@@ -153,21 +153,21 @@ PG_FUNCTION_INFO_V1(contains);
 Datum
 contains(PG_FUNCTION_ARGS)
 {
-    text *pattern_text = PG_GETARG_TEXT_PP(0);
+    text *qkmer_text = PG_GETARG_TEXT_PP(0);
     text *kmer_text = PG_GETARG_TEXT_PP(1);
 
     /* Convert the PostgreSQL text types to C strings */
-    char *pattern = text_to_cstring(pattern_text);
+    char *qkmer = text_to_cstring(qkmer_text);
     char *kmer = text_to_cstring(kmer_text);
 
     /* Check if pattern and kmer have the same length */
-    if (strlen(pattern) != strlen(kmer)) {
+    if (strlen(qkmer) != strlen(kmer)) {
         PG_RETURN_BOOL(false);
     }
 
     /* Convert 'N' in pattern to a regex pattern [ATGC] */
     char regex_pattern[1024] = {0};
-    char *p = pattern;
+    char *p = qkmer;
     int i = 0;
 
     while (*p != '\0' && i < sizeof(regex_pattern) - 1) {
@@ -175,7 +175,18 @@ contains(PG_FUNCTION_ARGS)
             /* Append [ATGC] in place of 'N' */
             strncat(regex_pattern, "[ATGC]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
             i += 6;
-        } else {
+        } 
+        else if (*p == 'R'){
+            /* Append [AG] in place of 'R' */
+            strncat(regex_pattern, "[AG]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else if (*p == 'Y'){
+            /* Append [CT] in place of 'Y' */
+            strncat(regex_pattern, "[CT]", sizeof(regex_pattern) - strlen(regex_pattern) - 1);
+            i += 4;
+        }
+        else {
             /* Append the character as-is */
             regex_pattern[i++] = *p;
         }
