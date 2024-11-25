@@ -16,9 +16,11 @@ SELECT typname, typlen, typinput, typoutput, typreceive, typsend
 FROM pg_type
 WHERE typname = 'kmer';
 
-CREATE TABLE t (id integer, dna dna, kmer kmer);
+SELECT typname, typlen, typinput, typoutput, typreceive, typsend
+FROM pg_type
+WHERE typname = 'qkmer';
 
---DROP TABLE t;
+CREATE TABLE t (id integer, dna dna, kmer kmer);
 
 INSERT INTO t VALUES
 (1, 'ACGT','ACGT'),
@@ -86,5 +88,42 @@ SELECT * FROM t where 'ANG' @>kmer;
 
 SELECT * FROM t WHERE contains('AN', kmer);
 SELECT * FROM t where 'AN' @>kmer;
+
+----------------
+
+SELECT k.kmer, count(*)
+FROM generate_kmers('ACGTACGT', 4) AS k(kmer)
+GROUP BY k.kmer
+ORDER BY count(*) DESC;
+
+WITH kmers AS (
+SELECT k.kmer, count(*)
+FROM generate_kmers('ACGTACGT', 4) AS k(kmer)
+GROUP BY k.kmer
+)
+SELECT sum(count) AS total_count,
+count(*) AS distinct_count,
+count(*) FILTER (WHERE count = 1) AS unique_count
+FROM kmers;
+
+
+WITH kmers AS (
+SELECT k.kmer, count(*)
+FROM generate_kmers('ACGTACGT', 4) AS k(kmer)
+GROUP BY k.kmer
+)
+SELECT kmer, count AS total_count,
+CASE 
+   WHEN count IS NOT NULL THEN 1
+   ELSE 0
+END AS distinct_count,
+CASE 
+   WHEN count=1 THEN 1
+   ELSE 0
+END AS unique_count
+FROM kmers;
+
+ 
+
 
 

@@ -15,6 +15,7 @@
 #include "utils/builtins.h"
 #include "libpq/pqformat.h"
 
+
 #include "kmer.h"
 
 
@@ -193,6 +194,7 @@ starts_with(PG_FUNCTION_ARGS)
     // Retrieve the prefix and kmer arguments as text
     text *prefix_text = PG_GETARG_TEXT_PP(0);
     text *kmer_text = PG_GETARG_TEXT_PP(1);
+    bool result;
 
     // Convert the `text` values to C-strings for easier manipulation
     const char *prefix = text_to_cstring(prefix_text);
@@ -204,10 +206,49 @@ starts_with(PG_FUNCTION_ARGS)
     }
 
     // Check if `kmer` starts with `prefix`
-    bool result = (strncmp(kmer, prefix, strlen(prefix)) == 0);
+    result = (strncmp(kmer, prefix, strlen(prefix)) == 0);
 
     PG_RETURN_BOOL(result);
 }
+
+
+
+/***********************COUNTING SUPPORT***********************/
+
+PG_FUNCTION_INFO_V1(kmer_hash);
+Datum
+kmer_hash(PG_FUNCTION_ARGS)
+{
+    Kmer *kmer = (Kmer *) PG_GETARG_POINTER(0);
+    uint32 hash = 5381;  // Seed value
+    int c;
+    const char *str = kmer->sequence;
+
+    // Compute hash using djb2 algorithm
+    while ((c = *str++))
+        hash = ((hash << 5) + hash) + c;
+
+    PG_RETURN_UINT32(hash);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*************************************************************************************************************************/
 /* Index Structure (I think we need to do a radix SpGist index https://habr.com/en/companies/postgrespro/articles/446624/)*/
