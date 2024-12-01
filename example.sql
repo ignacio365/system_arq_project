@@ -1,7 +1,6 @@
--- Drop the table if it exists
-DROP TABLE IF EXISTS t;
 -- Drop the extension if it exists
-DROP EXTENSION IF EXISTS dna_seq;
+DROP TABLE t;
+DROP EXTENSION IF EXISTS dna_seq CASCADE;
 
 SELECT * FROM pg_available_extensions WHERE name = 'dna_seq';
 
@@ -20,30 +19,11 @@ SELECT typname, typlen, typinput, typoutput, typreceive, typsend
 FROM pg_type
 WHERE typname = 'qkmer';
 
+----------------------------------------------------------------------------
+-----------------------------------------------------------------------------
+
+
 CREATE TABLE t (id integer, dna dna, kmer kmer);
-
-DROP TABLE q;
-CREATE TABLE q (
-    random_string KMER
-);
-INSERT INTO q (random_string)
-SELECT 
-    array_to_string(
-        ARRAY(SELECT (array['A', 'T', 'C', 'G'])[floor(random() * 4 + 1)] FROM generate_series(1, 10)), 
-        ''
-    )
-FROM generate_series(1, 1000000);
-
-DROP INDEX spgist_index;
-CREATE INDEX spgist_index ON q USING spgist (random_string kmer_index_support);
-SET enable_seqscan = OFF;
-SET enable_seqscan = ON;
-EXPLAIN (SELECT * FROM q WHERE 'ACGT'= random_string);
-
-
-
-
-
 
 INSERT INTO t VALUES
 (1, 'ACGT','ACGT'),
@@ -67,16 +47,17 @@ INSERT INTO t VALUES
 --INSERT INTO t VALUES (5, 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA', 'AGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAAAGTTTTGAAAA');
 
 SELECT * FROM t;
-SELECT dna, text(dna), dna(text(dna)), size(dna), length(dna) FROM t;
-SELECT kmer, text(kmer), kmer(text(kmer)), size(kmer), length(kmer) FROM t;
+SELECT dna, text(dna), dna(text(dna)), kmer(dna), dna(kmer(dna)), size(dna), length(dna) FROM t;
+SELECT kmer, text(kmer), kmer(text(kmer)), dna(kmer), kmer(dna(kmer)), size(kmer), length(kmer) FROM t;
 
 SELECT *
  FROM generate_kmers('ACGTACGT', 6) AS k(kmer);
 
-
  SELECT *
  FROM generate_kmers((SELECT dna FROM t WHERE text(dna)='AGTTTTGAAAA'),2);
-
+ 
+SELECT *
+ FROM generate_kmers((SELECT dna(kmer) FROM t LIMIT 1), 2) AS k(kmer);
 
 -- testing the equals
 -- this should get one row (using the table created using this script)
@@ -94,11 +75,6 @@ SELECT * FROM t WHERE starts_with('ACG', kmer);
 SELECT * FROM t WHERE 'ACG' ^@ kmer;
 
 SELECT * FROM t;
-
-CREATE INDEX spgist_index ON t USING spgist (kmer kmer_index_support);
-SET enable_seqscan = OFF;
-SET enable_seqscan = ON;
-EXPLAIN (SELECT * FROM t WHERE 'ACGT'= kmer);
 
 
 -- CONTAINS FUNCTION TEST
@@ -148,6 +124,31 @@ CASE
 END AS unique_count
 FROM kmers;
 
+
+DROP TABLE q;
+CREATE TABLE q (
+    kmer KMER
+);
+
+INSERT INTO q (kmer);
+SELECT 
+    array_to_string(
+        ARRAY(SELECT (array['A', 'T', 'C', 'G'])[floor(random() * 4 + 1)] FROM generate_series(1, 10)), 
+        ''
+    )
+FROM generate_series(1, 10000000);
+
+
+SELECT * FROM q LIMIT 20;
+
+DROP INDEX spgist_index;
+CREATE INDEX spgist_index ON q USING spgist (kmer kmer_index_support);
+
+SET enable_seqscan = OFF;
+
+EXPLAIN (SELECT * FROM q WHERE 'ACGT'= kmer);
+EXPLAIN (SELECT * FROM q WHERE  kmer ^@ 'ACG');
+EXPLAIN (SELECT * FROM q WHERE  'ANGTA' @> kmer);
  
 
 
