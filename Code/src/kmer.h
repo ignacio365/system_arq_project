@@ -6,6 +6,7 @@ typedef struct Kmer {
 } Kmer;
 
 Kmer* kmer_parse(const char* str);
+char * kmer_to_str(const Kmer* kmer);
 Datum kmer_in(PG_FUNCTION_ARGS);
 Datum kmer_out(PG_FUNCTION_ARGS);
 Datum kmer_recv(PG_FUNCTION_ARGS);

@@ -59,7 +59,7 @@ kmer_parse(const char* str)
 
 
 /*Kmer to str (internal)*/
-static char *
+char *
 kmer_to_str(const Kmer* kmer)
 {
   return pstrdup(kmer->sequence);
@@ -365,7 +365,7 @@ spg_kmer_choose(PG_FUNCTION_ARGS)
     Kmer       *inKmer = (Kmer *) DatumGetPointer(in->datum);
     const char *inSeq = inKmer->sequence;
     int         inSize = strlen(inSeq);
-    const char *prefixSeq = NULL;
+    const char *prefixStr = NULL;
     int         prefixSize = 0;
     int         commonLen = 0;
     int16       nodeChar = 0;
@@ -374,12 +374,13 @@ spg_kmer_choose(PG_FUNCTION_ARGS)
     /* Check for prefix match, set nodeChar to first byte after prefix */
     if (in->hasPrefix)
     {
-        Kmer *prefixKmer = (Kmer *) DatumGetPointer(in->prefixDatum);
-        prefixSeq = prefixKmer->sequence;
-        prefixSize = strlen(prefixSeq);
-
+        text       *prefixText = DatumGetTextPP(in->prefixDatum);
+  
+        prefixStr = VARDATA_ANY(prefixText);
+        prefixSize = VARSIZE_ANY_EXHDR(prefixText);
+  
         commonLen = commonPrefix(inSeq + in->level,
-                                 prefixSeq,
+                                 prefixStr,
                                  inSize - in->level,
                                  prefixSize);
 
@@ -403,13 +404,13 @@ spg_kmer_choose(PG_FUNCTION_ARGS)
             {
                 out->result.splitTuple.prefixHasPrefix = true;
                 out->result.splitTuple.prefixPrefixDatum =
-                    formKmerDatum(prefixSeq, commonLen);
+                    formTextDatum(prefixStr, commonLen);
             }
             out->result.splitTuple.prefixNNodes = 1;
             out->result.splitTuple.prefixNodeLabels =
                 (Datum *) palloc(sizeof(Datum));
             out->result.splitTuple.prefixNodeLabels[0] =
-                Int16GetDatum(*(unsigned char *) (prefixSeq + commonLen));
+                Int16GetDatum(*(unsigned char *) (prefixStr + commonLen));
 
             out->result.splitTuple.childNodeN = 0;
 
@@ -421,7 +422,7 @@ spg_kmer_choose(PG_FUNCTION_ARGS)
             {
                 out->result.splitTuple.postfixHasPrefix = true;
                 out->result.splitTuple.postfixPrefixDatum =
-                    formKmerDatum(prefixSeq + commonLen + 1,
+                    formTextDatum(prefixStr + commonLen + 1,
                                   prefixSize - commonLen - 1);
             }
 
@@ -533,7 +534,7 @@ spg_kmer_picksplit(PG_FUNCTION_ARGS)
     else
     {
         out->hasPrefix = true;
-        out->prefixDatum = formKmerDatum(kmer0->sequence, commonLen);
+        out->prefixDatum = formTextDatum(kmer0->sequence, commonLen);
     }
 
     /* Extract the node label (first non-common byte) from each value */
@@ -598,7 +599,7 @@ spg_kmer_inner_consistent(PG_FUNCTION_ARGS)
     Kmer        *reconstructedValue;
     Kmer        *reconstrKmer;
     int         maxReconstrLen;
-    Kmer        *prefixKmer = NULL;
+    text        *prefixText = NULL;
     int         prefixSize = 0;
     int         i;
 
@@ -615,9 +616,9 @@ spg_kmer_inner_consistent(PG_FUNCTION_ARGS)
     maxReconstrLen = in->level + 1;
     if (in->hasPrefix)
     {
-        prefixKmer = (Kmer *) DatumGetPointer(in->prefixDatum);
-        prefixSize = strlen(prefixKmer->sequence);
-        maxReconstrLen += prefixSize;
+         prefixText = DatumGetTextPP(in->prefixDatum);
+         prefixSize = VARSIZE_ANY_EXHDR(prefixText);
+         maxReconstrLen += prefixSize;
     }
 
     reconstrKmer = palloc(VARHDRSZ + maxReconstrLen);
@@ -626,7 +627,7 @@ spg_kmer_inner_consistent(PG_FUNCTION_ARGS)
     if (in->level)
         memcpy(reconstrKmer->sequence, reconstructedValue->sequence, in->level);
     if (prefixSize)
-        memcpy(reconstrKmer->sequence + in->level, prefixKmer->sequence, prefixSize);
+        memcpy(reconstrKmer->sequence + in->level, VARDATA_ANY(prefixText), prefixSize);
     // last byte of reconstrKmer will be filled in below
 
     /*

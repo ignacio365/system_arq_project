@@ -195,3 +195,20 @@ contains(PG_FUNCTION_ARGS)
     PG_RETURN_BOOL(ret == 0);
 }
 
+PG_FUNCTION_INFO_V1(kmer_cast_to_dna);
+Datum
+kmer_cast_to_dna(PG_FUNCTION_ARGS)
+{
+  const Kmer *kmer  = (Kmer *) PG_GETARG_POINTER(0); 
+  Dna *out = dna_parse(kmer_to_str(kmer));
+  PG_RETURN_TEXT_P(out);
+}
+
+PG_FUNCTION_INFO_V1(dna_cast_to_kmer);
+Datum
+dna_cast_to_kmer(PG_FUNCTION_ARGS)
+{
+  const Dna *dna  = (Dna *) PG_GETARG_POINTER(0); 
+  Kmer *out = kmer_parse(dna_to_str(dna));
+  PG_RETURN_TEXT_P(out);
+}

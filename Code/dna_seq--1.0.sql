@@ -311,6 +311,19 @@ DEFAULT FOR TYPE Kmer USING hash AS
     OPERATOR 1 =,
     FUNCTION 1 kmer_hash(kmer);
 
+/********************* EXTRA CASTS *******************************/
+
+CREATE OR REPLACE FUNCTION kmer(dna)
+  RETURNS kmer
+  AS 'MODULE_PATHNAME', 'kmer_cast_to_dna'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+CREATE OR REPLACE FUNCTION dna(kmer)
+  RETURNS text
+  AS 'MODULE_PATHNAME', 'dna_cast_to_kmer'
+  LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
+
+
 /******************************************************************************
  INDEX
  ******************************************************************************/
@@ -342,10 +355,12 @@ CREATE OR REPLACE FUNCTION my_leaf_consistent(internal, internal)
   
 
 CREATE OPERATOR CLASS kmer_index_support
-FOR TYPE kmer USING spgist
+DEFAULT FOR TYPE kmer USING spgist
 AS
         STORAGE kmer, 
-        OPERATOR        1       =  (kmer, kmer) , 
+        OPERATOR        1       =  (kmer, kmer) ,
+        OPERATOR        2       ^@ (kmer, kmer), 
+        OPERATOR        3       @> (qkmer, kmer),
         FUNCTION        1 my_config(internal, internal),
         FUNCTION        2 my_choose(internal, internal),
         FUNCTION        3 my_picksplit(internal, internal),

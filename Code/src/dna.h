@@ -7,7 +7,8 @@ typedef struct Dna {
     char sequence[FLEXIBLE_ARRAY_MEMBER];
 } Dna;
 
-
+Dna* dna_parse(const char* str);
+char * dna_to_str(const Dna* dna);
 Datum dna_in(PG_FUNCTION_ARGS);
 Datum dna_out(PG_FUNCTION_ARGS);
 Datum dna_recv(PG_FUNCTION_ARGS);

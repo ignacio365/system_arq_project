@@ -18,7 +18,7 @@ PG_MODULE_MAGIC; /*Checks for incompatibilities*/
 
 
 /*Dna creation from str (internal) (with checks)*/
-static Dna*
+Dna*
 dna_parse(const char* str)
 {
   int32 len = strlen(str);
@@ -48,7 +48,7 @@ dna_parse(const char* str)
 
 
 /*Dna to str (internal)*/
-static char *
+char *
 dna_to_str(const Dna* dna)
 {
   return pstrdup(dna->sequence);
