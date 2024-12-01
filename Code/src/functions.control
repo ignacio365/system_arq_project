@@ -1,6 +1,6 @@
 
 # functions
-comment = 'functions that use more than one datatype'
+comment = 'Functions that use more than one datatype'
 default_version = '1.0'
 module_pathname = '$libdir/dna_seq'
 relocatable = true

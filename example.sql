@@ -22,6 +22,29 @@ WHERE typname = 'qkmer';
 
 CREATE TABLE t (id integer, dna dna, kmer kmer);
 
+DROP TABLE q;
+CREATE TABLE q (
+    random_string KMER
+);
+INSERT INTO q (random_string)
+SELECT 
+    array_to_string(
+        ARRAY(SELECT (array['A', 'T', 'C', 'G'])[floor(random() * 4 + 1)] FROM generate_series(1, 10)), 
+        ''
+    )
+FROM generate_series(1, 1000000);
+
+DROP INDEX spgist_index;
+CREATE INDEX spgist_index ON q USING spgist (random_string kmer_index_support);
+SET enable_seqscan = OFF;
+SET enable_seqscan = ON;
+EXPLAIN (SELECT * FROM q WHERE 'ACGT'= random_string);
+
+
+
+
+
+
 INSERT INTO t VALUES
 (1, 'ACGT','ACGT'),
 (2, 'CT', 'CT'),
@@ -33,6 +56,8 @@ INSERT INTO t VALUES
 (8, 'ATGTC','ATGTC'),
 (9, 'ATGT','ATGT'),
 (10, 'ATG','ATG');
+(11, 'ATG','ATG');
+(12, 'ATG','ATG');
 
 /*Checking that it works*/
 --INSERT INTO t VALUES (5, 'BTGE', 'BTGE');

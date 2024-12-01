@@ -317,36 +317,35 @@ DEFAULT FOR TYPE Kmer USING hash AS
 
 CREATE OR REPLACE FUNCTION my_config(internal, internal) 
     RETURNS void
-    AS 'MODULE_PATHNAME', 'spgKmerConfig'
+    AS 'MODULE_PATHNAME', 'spg_kmer_config'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION my_choose(internal, internal) 
     RETURNS void
-    AS 'MODULE_PATHNAME', 'spgKmerChoose'
+    AS 'MODULE_PATHNAME', 'spg_kmer_choose'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION my_picksplit(internal, internal) 
     RETURNS void
-    AS 'MODULE_PATHNAME', 'spgKmerPicksplit'
+    AS 'MODULE_PATHNAME', 'spg_kmer_picksplit'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION my_inner_consistent(internal, internal) 
     RETURNS void
-    AS 'MODULE_PATHNAME', 'spgKmerInnerConsistent'
+    AS 'MODULE_PATHNAME', 'spg_kmer_inner_consistent'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
 
 CREATE OR REPLACE FUNCTION my_leaf_consistent(internal, internal) 
     RETURNS bool
-    AS 'MODULE_PATHNAME', 'spgKmerLeafConsistent'
+    AS 'MODULE_PATHNAME', 'spg_kmer_leaf_consistent'
     LANGUAGE C IMMUTABLE STRICT PARALLEL SAFE;
   
 
 CREATE OPERATOR CLASS kmer_index_support
-DEFAULT FOR TYPE kmer USING spgist
+FOR TYPE kmer USING spgist
 AS
         STORAGE kmer, 
-        OPERATOR        1       =  (kmer, kmer) ,
-        OPERATOR        2       ^@ (kmer, kmer), 
+        OPERATOR        1       =  (kmer, kmer) , 
         FUNCTION        1 my_config(internal, internal),
         FUNCTION        2 my_choose(internal, internal),
         FUNCTION        3 my_picksplit(internal, internal),
