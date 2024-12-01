@@ -16,27 +16,34 @@ PG_MODULE_MAGIC; /*Checks for incompatibilities*/
 
 /*DNA CREATION*/
 
+/* Utility function to validate a DNA sequence that is also used to validate the dna string for kmers*/
+static void
+validate_dna_sequence(const char* str)
+{
+    if (str == NULL || str[0] == '\0') {
+        ereport(ERROR, (errmsg("Input array cannot be NULL or empty")));
+    }
+
+    int32 len = strlen(str);
+    for (int i = 0; i < len; i++) {
+        if (!(str[i] == 'A' || str[i] == 'C' || str[i] == 'G' || str[i] == 'T')) {
+            ereport(
+                ERROR,
+                (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
+                 errmsg("Error: Invalid nucleotide '%c' in sequence.\n", str[i])));
+        }
+    }
+}
 
 /*Dna creation from str (internal) (with checks)*/
 Dna*
 dna_parse(const char* str)
 {
+
+  validate_dna_sequence(str);
+
   int32 len = strlen(str);
   Dna *dna;
-
-  if (str == NULL ||str[0] == '\0'){
-        ereport(ERROR, (errmsg("Input array cannot be NULL or empty")));
-    }
-
-
-  for (int i = 0; i < len; i++) {
-    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T')) {
-			ereport(
-            ERROR,
-            (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-            errmsg("Error: Invalid nucleotide '%c' in sequence.\n", str[i])));
-    }
-  }
   
   dna = (Dna *) palloc(VARHDRSZ + len  + 1 );
   SET_VARSIZE(dna, VARHDRSZ +  len  + 1 );

@@ -28,26 +28,15 @@
 Kmer*
 kmer_parse(const char* str)
 {
+
+  validate_dna_sequence(str);
+  
   int32 len = strlen(str);
   Kmer *kmer;
-
-  if (str == NULL ||str[0] == '\0'){
-        ereport(ERROR, (errmsg("Input array cannot be NULL or empty")));
-    }
 
   if(strlen(str) > 32){
         ereport(ERROR, (errmsg("Input array cannot be longer than 32 nucleotides.")));
     }
-
-
-  for (int i = 0; i < len; i++) {
-    if (!(str[i]== 'A' || str[i] == 'C' || str[i] == 'G' || str[i]== 'T')) {
-			ereport(
-            ERROR,
-            (errcode(ERRCODE_INVALID_PARAMETER_VALUE),
-            errmsg("Error: Invalid nucleotide '%c' in sequence.\n", str[i])));
-    }
-  }
   
   kmer = (Kmer*) palloc(VARHDRSZ + len  + 1 );
   SET_VARSIZE(kmer, VARHDRSZ +  len  + 1 );
