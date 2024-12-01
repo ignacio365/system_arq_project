@@ -35,7 +35,7 @@ Each time that you build the docker container and run it, beforehand you have to
 
 ### Step 3: Create extension and execute queries
 
-Run the commented example.sql file which creates the extension and tests it with several queries (can also be done in PgAdmin4 by connecting to the psql server, and copy pasting queries from the example.sql scipt) 
+Run the commented example.sql file which creates the extension and tests it with several queries (can also be done in PgAdmin4 by connecting to the psql server, and copy pasting queries from the example.sql script) 
 
 ```bash
 psql -h localhost -p 25432 -U postgres -W -f example.sql
