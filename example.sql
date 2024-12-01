@@ -251,22 +251,23 @@ CREATE TABLE q (
     kmer KMER
 );
 
-INSERT INTO q (kmer) --- HERE REMOVED ;
+INSERT INTO q (kmer) 
 SELECT 
     array_to_string(
         ARRAY(SELECT (array['A', 'T', 'C', 'G'])[floor(random() * 4 + 1)] FROM generate_series(1, 10)), 
         ''
     )
-FROM generate_series(1, 10000000);
+FROM generate_series(1, 1000000);
 
 -- Prints the first 20 rows of the table
 SELECT * FROM q LIMIT 20;
 
+
+-- Create the index
 DROP INDEX spgist_index;
 CREATE INDEX spgist_index ON q USING spgist (kmer kmer_index_support);
 
 SET enable_seqscan = OFF;
---SET enable_seqscan = ON; -- ADDED THIS LINE
 
 EXPLAIN (SELECT * FROM q WHERE 'ACGT'= kmer);
 EXPLAIN (SELECT * FROM q WHERE  kmer ^@ 'ACG');
