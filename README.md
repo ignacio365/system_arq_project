@@ -33,4 +33,13 @@ docker run --name postgres_ext_project_container -d -p 25432:5432 -e POSTGRES_PA
 
 Each time that you build the docker container and run it, beforehand you have to delete the old docker container on the docker app. Other option is, instead of deleting the old container, just change the name of the container in the second step. 
 
+### Step 3: Create extension and execute queries
+
+Run the commented example.sql file which creates the extension and tests it with several queries (can also be done in PgAdmin4 by connecting to the psql server, and copy pasting queries from the example.sql scipt) 
+
+```bash
+psql -h localhost -p 25432 -U postgres -W -f example.sql
+```
+
+
 
