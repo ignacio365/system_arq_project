@@ -40,7 +40,7 @@ Run the commented example.sql file which creates the extension and tests it with
 To do so, first connect to psql: 
 
 ```bash
-psql -h localhost -p 25432 -U postgres -W -f example.sql
+psql -h localhost -p 25432 -U postgres -W 
 ```
 
 Then in psql, create a new database: 
