@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------------------------------------------------
--- SQL SCRIPT TO CREATE THE dna_seq EXTENSION AND NECESSARY ATTRIBUTES, AND RUN SOME QUERIES
+-- SQL SCRIPT TO CREATE THE dna_seq EXTENSION AND NECESSARY ATTRIBUTES, AND RUN SOME TESTS
 ----------------------------------------------------------------------------------------------------------------
 
 -- Step 1. Set up environment and create extension
@@ -126,7 +126,7 @@ SELECT *
  FROM generate_kmers('ACGTACGT', 6) AS k(kmer);
 
  SELECT *
- FROM generate_kmers((SELECT dna FROM t WHERE text(dna)='AGTTTTGAAAA'),2); -- weird: name of the column outputted is 'f' - not kmers like 2 others
+ FROM generate_kmers((SELECT dna FROM t WHERE text(dna)='AGTTTTGAAAA'),2) AS k(kmer);
  
 SELECT *
  FROM generate_kmers((SELECT dna(kmer) FROM t LIMIT 1), 2) AS k(kmer);
@@ -156,7 +156,6 @@ END $$;
 -- Returns 2 tables with 2 rows (ACGT and ACGTC) - these 2 queries are equivalent
 SELECT * FROM t WHERE starts_with('ACG', kmer);
 SELECT * FROM t WHERE 'ACG' ^@ kmer;
---SELECT * FROM t WHERE  kmer^@ 'ACG'; --this is what is in the report - what to do?
 
  --------------------------------------------------------------------------------------
 -- Step 8. Testing the contains function (works with qkmers too)
@@ -233,7 +232,7 @@ BEGIN
     RAISE NOTICE 'Step 10. Testing the Indexes';
 END $$;
 
--- Create new table with 10000000 rows of qkmers
+-- Create new table with 1000000 rows of qkmers
 DROP TABLE q;
 CREATE TABLE q (
     kmer KMER
@@ -252,7 +251,7 @@ SELECT * FROM q LIMIT 20;
 
 
 -- Create the index
-DROP INDEX spgist_index;
+DROP INDEX IF EXISTS spgist_index;
 CREATE INDEX spgist_index ON q USING spgist (kmer kmer_index_support);
 
 SET enable_seqscan = OFF;
@@ -260,7 +259,10 @@ SET enable_seqscan = OFF;
 EXPLAIN (SELECT * FROM q WHERE 'ACGT'= kmer);
 EXPLAIN (SELECT * FROM q WHERE  kmer ^@ 'ACG');
 EXPLAIN (SELECT * FROM q WHERE  'ANGTA' @> kmer);
- 
+
+
+
+
 
 
 
