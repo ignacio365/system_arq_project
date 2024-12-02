@@ -222,8 +222,8 @@ kmer_hash(PG_FUNCTION_ARGS)
 
 
 /*************************************************************************************************************************/
-/* Index Structure (I think we need to do a radix SpGist index https://habr.com/en/companies/postgrespro/articles/446624/)*/
-/*This is hard I am copying a lot of code from https://doxygen.postgresql.org/spgtextproc_8c_source.html and trying to adapt it.*/
+/* Index Structure (Using a SpGist index https://habr.com/en/companies/postgrespro/articles/446624/)*/
+/* Source: https://doxygen.postgresql.org/spgtextproc_8c_source.html */
 /****************************************************************************************************************/
 
 
