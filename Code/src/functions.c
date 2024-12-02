@@ -18,6 +18,8 @@ typedef struct {
     char *sequence;  // Store the DNA sequence (or other values you need)
 } FuncData;  // Define a struct to hold the values you need
 
+//Function to generate the kmers
+
 PG_FUNCTION_INFO_V1(generate_kmers);
 Datum
 generate_kmers(PG_FUNCTION_ARGS)
@@ -31,7 +33,7 @@ generate_kmers(PG_FUNCTION_ARGS)
     int                  max_calls;
     FuncData             *data;
  
-    /* stuff done only on the first call of the function */
+    /* bloc executed only on the first call of the function */
     if (SRF_IS_FIRSTCALL())
     {
         MemoryContext   oldcontext;
@@ -62,7 +64,7 @@ generate_kmers(PG_FUNCTION_ARGS)
         MemoryContextSwitchTo(oldcontext);
     }
 
-    /* stuff done on every call of the function */
+    /* bloc executed on every call of the function */
     funcctx = SRF_PERCALL_SETUP();
     call_cntr = funcctx->call_cntr;
     max_calls = funcctx->max_calls;
@@ -92,7 +94,7 @@ generate_kmers(PG_FUNCTION_ARGS)
     }
 }
 
-
+//contains function - checks if a kmer or qkmer contains a certain pattern
 
 PG_FUNCTION_INFO_V1(contains);
 Datum
