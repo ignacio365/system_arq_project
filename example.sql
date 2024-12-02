@@ -94,27 +94,15 @@ BEGIN
 END $$;
 
 --------------------------------------------------------------------------------------
--- Step 4.a. Printing t table and testing text, size, length and text functions for kmer and dna
+-- Step 4. Printing t table and testing text, size, length and text functions for kmer and dna
 DO $$ 
 BEGIN
-    RAISE NOTICE 'Step 4.a. Printing t table and testing text, size, length and text functions for kmer and dna';
+    RAISE NOTICE 'Step 4. Printing t table and testing text, size, length and text functions for kmer and dna';
 END $$;
 
 SELECT * FROM t;
 SELECT dna, text(dna), dna(text(dna)), kmer(dna), dna(kmer(dna)), size(dna), length(dna) FROM t;
 SELECT kmer, text(kmer), kmer(text(kmer)), dna(kmer), kmer(dna(kmer)), size(kmer), length(kmer) FROM t;
-
---------------------------------------------------------------------------------------
--- Step 4.b. Testing text, size, length and text functions for qkmer ??????????????
-DO $$ 
-BEGIN
-    RAISE NOTICE 'Step 4.b. Testing text, size, length and text functions for qkmer';
-END $$;
---SELECT * FROM size('ANGT'), length('ANGT');
-
-
-
-
 
 --------------------------------------------------------------------------------------
 -- Step 5. Testing the generate_kmers function
@@ -239,7 +227,7 @@ FROM kmers;
 
 
  --------------------------------------------------------------------------------------
--- Step 10. Testing the Indexes -- Need to get the latest version
+-- Step 10. Testing the Indexes 
 DO $$ 
 BEGIN
     RAISE NOTICE 'Step 10. Testing the Indexes';
