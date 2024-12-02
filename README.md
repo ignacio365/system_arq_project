@@ -10,8 +10,8 @@ TO DO LIST
  9. ~~starts_with(k kmer, k kmer)~~
  10. ~~contains(pattern qkmer, k kmer)~~
  11. ~~K-mer Counting Support~~
- 12. Index Structure
- 13. Test your implementation with both synthetic and real-world data. For development and initial
+ 12. ~~Index Structure~~
+ 13. Test your implementation with ~~both synthetic and~~ real-world data. For development and initial
 
  ## Building and Running the Custom PostgreSQL Docker Image for Extension
 
