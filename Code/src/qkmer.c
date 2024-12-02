@@ -21,10 +21,10 @@
 
 /**********************************************************/
 
-/*KMER CREATION*/
+/*QKMER CREATION*/
 
 
-/*Kmer creation from str (internal) (with checks)*/
+/*Qkmer creation from str (internal) (with checks)*/
 Qkmer*
 qkmer_parse(const char* str)
 {
@@ -67,9 +67,9 @@ qkmer_to_str(const Qkmer* qkmer)
 
 /********************************************************/
 
-/*Internal function for Postgre to create the Kmer datatype*/
+/*Internal function for Postgre to create the Qkmer datatype*/
 
-/*In function (str -> Kmer)*/
+/*In function (str -> Qkmer)*/
 PG_FUNCTION_INFO_V1(qkmer_in);
 Datum
 qkmer_in(PG_FUNCTION_ARGS)
@@ -88,7 +88,7 @@ qkmer_out(PG_FUNCTION_ARGS)
   PG_RETURN_CSTRING(qkmer_to_str(qkmer));
 }
 
-/*Binary in (binary -> Kmer)*/
+/*Binary in (binary -> Qkmer)*/
 
 PG_FUNCTION_INFO_V1(qkmer_recv);
 Datum
