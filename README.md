@@ -54,6 +54,17 @@ Then connect to the dna database and run the example.sql script, which outputs q
 psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
 ```
 
+TO BE CONTINUED
+To test the extension with real data from the SRA-Database, use the "backup.tar" file from the zip-folder and restore it on you "custom postgres". 
+It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536". 
+To simplify the transformation process, the resulting database was backed up in the .tar file that you find in the zip-folder.
+```bash
+pg_restore 
+psql -h localhost -p 25432 -U postgres -W -d dna -f example_sra_data.sql
+```
+
+
+
 
 
 
