@@ -53,6 +53,7 @@ Then connect to the dna database and run the example.sql script, which outputs q
 ```bash
 psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
 ```
+### Step 4: Test the code on real data
 
 TO BE CONTINUED
 To test the extension with real data from the SRA-Database, use the "backup.tar" file from the zip-folder and restore it on you "custom postgres". 
