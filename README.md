@@ -53,15 +53,30 @@ Then connect to the dna database and run the example.sql script, which outputs q
 ```bash
 psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
 ```
-### Step 4: Test the code on real data
+### Step 4: Test the extension with data fromthe SRA-Databse 
 
-TO BE CONTINUED
-To test the extension with real data from the SRA-Database, use the "backup.tar" file from the zip-folder and restore it on you "custom postgres". 
-It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536". 
-To simplify the transformation process, the resulting database was backed up in the .tar file that you find in the zip-folder.
+To test the extension with real data from the SRA-Database, use the "sra_backup.tar" databasefile from the zip-folder.
+It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536" found on the SRA-Database Website. (https://www.ncbi.nlm.nih.gov/sra/?term=SRA%20database)
+To simplify the testing process, the database was pre-transformed using a python script to separate the provided seqeunces into kmers, qkmers and dna strings. 
+The resulting database with one table per sequence type and the "dna_seq" extension are backed up in the .tar file that you find in the zip-folder.
+
+To restore the databse first enter the container with the extension: 
+
 ```bash
-pg_restore 
-psql -h localhost -p 25432 -U postgres -W -d dna -f example_sra_data.sql
+docker exec -it postgres_ext_project_container bash
+```
+Once inside the container restore the database called "ncbi"
+
+```bash
+pg_restore -U postgres -C -d postgres /tmp/sra_backup.tar
+ ```
+
+Then exit the container simply typing "exit" + Enter.
+Next, navigate to the unziped folder, that contains the example_sra_data.sql script.
+Then run the sql script and connect to the dna database, which outputs query results and comments.
+
+```bash
+psql -h localhost -p 25432 -U postgres -W -d ncbi -f example_sra_data.sql
 ```
 
 
