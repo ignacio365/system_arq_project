@@ -43,9 +43,16 @@ psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
 To test the extension with real data from the SRA-Database, use the "sra_backup.tar" databasefile from the zip-folder.
 It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536" found on the SRA-Database Website. (https://www.ncbi.nlm.nih.gov/sra/?term=SRA%20database)
 To simplify the testing process, the database was pre-transformed using a python script to separate the provided sequences into kmers, qkmers and dna strings. 
-The resulting database with one table per sequence type and the "dna_seq" extension are backed up in the .tar file that you find in the zip-folder.
+The resulting database with one table per sequence type and the "dna_seq" extension are backed up in a .tar file.
 
-To restore the database navigate to the projectfolder containing the sra_backup.tar file and run the following command 
+Unfortunately that file is too big to upload, therefore you will have to access the zipped .tar file from the ULB OneDrive and unzip it into the project folder. 
+
+Access the OneDrive via this Link: 
+https://universitelibrebruxelles-my.sharepoint.com/:u:/g/personal/jule_grigat_ulb_be/EZEDAnGs_jJMpmMN6V6nPmQB41hQMFlwszpRBlgjVNrw6g?e=1jRh9Y
+
+Please use your ULB-Account to do so, since you're only granted access with your ULB-Account. 
+
+To eventually restore the database, please navigate to the project folder that should now contain the sra_backup.tar file. Run the following command:
 
 ```bash
 pg_restore -h localhost -p 25432 -U postgres -W -C -d postgres sra_backup.tar
