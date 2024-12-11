@@ -1,19 +1,4 @@
-TO DO LIST
- 1. ~~DNA Sequence Type (DNA)~~
- 2. ~~K-mer Type (kmer)~~
- 3. ~~Query K-mer Type (qkmer)~~
- 4. ~~length(dna)~~
- 5. ~~length(kmer)~~
- 6. ~~length(qkmer)~~
- 7. ~~generate_kmers(sequence dna, k integer)~~
- 8. ~~equals(k kmer, k kmer)~~
- 9. ~~starts_with(k kmer, k kmer)~~
- 10. ~~contains(pattern qkmer, k kmer)~~
- 11. ~~K-mer Counting Support~~
- 12. Index Structure
- 13. Test your implementation with both synthetic and real-world data. For development and initial
-
- ## Building and Running the Custom PostgreSQL Docker Image for Extension
+## Building and Running the Custom PostgreSQL Docker Image for Extension
 
 ### Step 1: Build the Docker Image
 
@@ -32,5 +17,54 @@ docker run --name postgres_ext_project_container -d -p 25432:5432 -e POSTGRES_PA
 ### Important
 
 Each time that you build the docker container and run it, beforehand you have to delete the old docker container on the docker app. Other option is, instead of deleting the old container, just change the name of the container in the second step. 
+
+### Step 3: Create extension and execute queries
+
+Run the commented example.sql file which creates the extension and tests it with several queries (can also be done in PgAdmin4 by connecting to the psql server, creating the dna database and copy pasting queries from the example.sql script).
+
+To do so, first connect to psql: 
+
+```bash
+psql -h localhost -p 25432 -U postgres -W 
+```
+
+Then in psql, create a new database: 
+```bash
+postgres=#CREATE DATABASE dna;
+postgres=#QUIT;
+```
+
+Then connect to the dna database and run the example.sql script, which outputs query results and comments.
+```bash
+psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
+```
+### Step 4: Test the extension with data from the SRA-Databse 
+
+To test the extension with real data from the SRA-Database, use the "sra_backup.tar" databasefile from the zip-folder.
+It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536" found on the SRA-Database Website. (https://www.ncbi.nlm.nih.gov/sra/?term=SRA%20database)
+To simplify the testing process, the database was pre-transformed using a python script to separate the provided sequences into kmers, qkmers and dna strings. 
+The resulting database with one table per sequence type and the "dna_seq" extension are backed up in a .tar file.
+
+Unfortunately that file is too big to upload, therefore you will have to access the zipped .tar file from the ULB OneDrive and unzip it into the project folder. 
+
+Access the OneDrive via this Link: 
+https://universitelibrebruxelles-my.sharepoint.com/:u:/g/personal/jule_grigat_ulb_be/EZEDAnGs_jJMpmMN6V6nPmQB41hQMFlwszpRBlgjVNrw6g?e=1jRh9Y
+
+Please use your ULB-Account to do so, since you're only granted access with your ULB-Account. 
+
+To eventually restore the database, please navigate to the project folder that should now contain the sra_backup.tar file. Run the following command:
+
+```bash
+pg_restore -h localhost -p 25432 -U postgres -W -C -d postgres sra_backup.tar
+ ```
+After entering the password for the server, the database including the extension will be restored.  
+Then run the following line to connect to the dna database and run the sql script, which outputs query results and comments.
+
+```bash
+psql -h localhost -p 25432 -U postgres -W -d ncbi -f example_sra_data.sql
+```
+
+
+
 
 
