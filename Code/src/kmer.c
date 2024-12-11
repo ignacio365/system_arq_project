@@ -29,10 +29,12 @@ Kmer*
 kmer_parse(const char* str)
 {
 
-  validate_dna_sequence(str);
+  
   
   int32 len = strlen(str);
   Kmer *kmer;
+
+  validate_dna_sequence(str);
 
   if(strlen(str) > 32){
         ereport(ERROR, (errmsg("Input array cannot be longer than 32 nucleotides.")));
