@@ -40,10 +40,12 @@ Dna*
 dna_parse(const char* str)
 {
 
-  validate_dna_sequence(str);
+  
 
   int32 len = strlen(str);
   Dna *dna;
+
+  validate_dna_sequence(str);
   
   dna = (Dna *) palloc(VARHDRSZ + len  + 1 );
   SET_VARSIZE(dna, VARHDRSZ +  len  + 1 );
