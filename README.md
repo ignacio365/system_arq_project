@@ -60,20 +60,13 @@ It contains data from the "DNA of bacteria in beagle feces" database with the Ac
 To simplify the testing process, the database was pre-transformed using a python script to separate the provided seqeunces into kmers, qkmers and dna strings. 
 The resulting database with one table per sequence type and the "dna_seq" extension are backed up in the .tar file that you find in the zip-folder.
 
-To restore the databse first enter the container with the extension: 
+To restore the database navigate to the projectfolder containing the sra_backup.tar file and run the following command 
 
 ```bash
-docker exec -it postgres_ext_project_container bash
-```
-Once inside the container restore the database called "ncbi"
-
-```bash
-pg_restore -U postgres -C -d postgres /tmp/sra_backup.tar
+pg_restore -h localhost -p 25432 -U postgres -W -C -d postgres sra_backup.tar
  ```
-
-Then exit the container simply typing "exit" + Enter.
-Next, navigate to the unziped folder, that contains the example_sra_data.sql script.
-Then run the sql script and connect to the dna database, which outputs query results and comments.
+After entering the password for the server, the database including the extension will be restored.  
+Then run the following line to connect to the dna database and run the sql script, which outputs query results and comments.
 
 ```bash
 psql -h localhost -p 25432 -U postgres -W -d ncbi -f example_sra_data.sql
