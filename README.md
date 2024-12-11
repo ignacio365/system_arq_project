@@ -1,19 +1,4 @@
-TO DO LIST
- 1. ~~DNA Sequence Type (DNA)~~
- 2. ~~K-mer Type (kmer)~~
- 3. ~~Query K-mer Type (qkmer)~~
- 4. ~~length(dna)~~
- 5. ~~length(kmer)~~
- 6. ~~length(qkmer)~~
- 7. ~~generate_kmers(sequence dna, k integer)~~
- 8. ~~equals(k kmer, k kmer)~~
- 9. ~~starts_with(k kmer, k kmer)~~
- 10. ~~contains(pattern qkmer, k kmer)~~
- 11. ~~K-mer Counting Support~~
- 12. ~~Index Structure~~
- 13. Test your implementation with ~~both synthetic and~~ real-world data. For development and initial
-
- ## Building and Running the Custom PostgreSQL Docker Image for Extension
+## Building and Running the Custom PostgreSQL Docker Image for Extension
 
 ### Step 1: Build the Docker Image
 
@@ -53,11 +38,11 @@ Then connect to the dna database and run the example.sql script, which outputs q
 ```bash
 psql -h localhost -p 25432 -U postgres -W -d dna -f example.sql
 ```
-### Step 4: Test the extension with data fromthe SRA-Databse 
+### Step 4: Test the extension with data from the SRA-Databse 
 
 To test the extension with real data from the SRA-Database, use the "sra_backup.tar" databasefile from the zip-folder.
 It contains data from the "DNA of bacteria in beagle feces" database with the Accession ID "SRX26747536" found on the SRA-Database Website. (https://www.ncbi.nlm.nih.gov/sra/?term=SRA%20database)
-To simplify the testing process, the database was pre-transformed using a python script to separate the provided seqeunces into kmers, qkmers and dna strings. 
+To simplify the testing process, the database was pre-transformed using a python script to separate the provided sequences into kmers, qkmers and dna strings. 
 The resulting database with one table per sequence type and the "dna_seq" extension are backed up in the .tar file that you find in the zip-folder.
 
 To restore the database navigate to the projectfolder containing the sra_backup.tar file and run the following command 
